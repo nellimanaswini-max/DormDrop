@@ -207,12 +207,24 @@ const itemVariants = {
 };
 export default function MarketplaceGrid({
   listings = dummyListings,
+  searchQuery = "",
+  selectedCategory = "",
   favorites = [],
   onFavoriteToggle = () => {},
   onCardClick = () => {},
 }) {
   const displayListings =
     listings && listings.length > 0 ? listings : dummyListings;
+    const filteredListings = displayListings.filter((listing) => {
+  const matchesSearch =
+    listing.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+  const matchesCategory =
+    selectedCategory === "" ||
+    listing.category === selectedCategory;
+
+  return matchesSearch && matchesCategory;
+});
 
   if (!displayListings.length) {
     return (
@@ -258,7 +270,7 @@ export default function MarketplaceGrid({
         viewport={{ once: true }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
       >
-        {displayListings.map((listing) => {
+        {filteredListings.map((listing) => {
           const itemKey = listing.listingId || listing.id;
 
           return (
