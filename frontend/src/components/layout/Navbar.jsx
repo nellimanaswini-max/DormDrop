@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
 import {
   Sparkles,
   Heart,
@@ -11,8 +12,6 @@ import {
 } from "lucide-react";
 
 export default function Navbar({
-  activeTab = "home",
-  setActiveTab = () => {},
   selectedCampus = "Your Campus",
   setSelectedCampus = () => {},
   unreadMessagesCount = 0,
@@ -20,33 +19,53 @@ export default function Navbar({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const navItems = [
-    { id: "home", label: "Explore", icon: Sparkles },
-    { id: "favorites", label: "Favorites", icon: Heart },
-    { id: "create", label: "Drop Item", icon: Plus, highlight: true },
     {
-      id: "messages",
+      label: "Explore",
+      icon: Sparkles,
+      path: "/",
+    },
+    {
+      label: "Favorites",
+      icon: Heart,
+      path: "/favorites",
+    },
+    {
+      label: "Drop Item",
+      icon: Plus,
+      path: "/create",
+      highlight: true,
+    },
+    {
       label: "Messages",
       icon: MessageSquare,
+      path: "/messages",
       badge: unreadMessagesCount,
     },
-    { id: "profile", label: "Profile", icon: User },
+    {
+      label: "Profile",
+      icon: User,
+      path: "/profile",
+    },
   ];
 
   const campuses = ["Your Campus"];
 
   return (
     <motion.header
-      initial={{ y: -30, opacity: 0 }}
+      initial={{ y: -25, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.35 }}
       className="sticky top-0 z-40 w-full border-b border-stone-200/60 bg-white/80 backdrop-blur-md"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo + Campus */}
+
+        {/* Logo */}
+
         <div className="flex items-center gap-5">
-          <div
-            onClick={() => setActiveTab("home")}
-            className="flex items-center gap-2 cursor-pointer"
+
+          <NavLink
+            to="/"
+            className="flex items-center gap-2"
           >
             <div className="w-9 h-9 rounded-xl bg-stone-900 flex items-center justify-center text-white font-black text-sm">
               DD
@@ -55,12 +74,14 @@ export default function Navbar({
             <span className="hidden sm:block text-lg font-bold tracking-tight text-stone-900">
               DormDrop
             </span>
-          </div>
+          </NavLink>
 
           <div className="hidden sm:block h-5 w-px bg-stone-200" />
 
-          {/* Campus Dropdown */}
+          {/* Campus */}
+
           <div className="relative">
+
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center gap-2 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 transition"
@@ -81,7 +102,8 @@ export default function Navbar({
                   onClick={() => setDropdownOpen(false)}
                 />
 
-                <div className="absolute left-0 mt-2 w-52 bg-white border border-stone-200 rounded-xl shadow-lg py-2 z-50">
+                <div className="absolute left-0 mt-2 w-52 bg-white rounded-xl border border-stone-200 shadow-lg py-2 z-50">
+
                   {campuses.map((campus) => (
                     <button
                       key={campus}
@@ -98,48 +120,44 @@ export default function Navbar({
                       {campus}
                     </button>
                   ))}
+
                 </div>
               </>
             )}
+
           </div>
+
         </div>
 
         {/* Navigation */}
-        <nav className="flex items-center gap-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
 
-            if (item.highlight) {
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition ${
-                    isActive
-                      ? "bg-stone-900 text-white"
-                      : "bg-stone-100 hover:bg-stone-200 text-stone-900"
-                  }`}
-                >
-                  <Icon size={16} />
-                  <span className="hidden sm:block">{item.label}</span>
-                </button>
-              );
-            }
+        <nav className="flex items-center gap-2">
+
+          {navItems.map((item) => {
+
+            const Icon = item.icon;
 
             return (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`relative flex items-center gap-2 px-3 py-2 rounded-xl transition ${
-                  isActive
-                    ? "bg-stone-100 text-stone-900"
-                    : "text-stone-500 hover:bg-stone-50 hover:text-stone-900"
-                }`}
+
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `${
+                    item.highlight
+                      ? isActive
+                        ? "bg-stone-900 text-white"
+                        : "bg-stone-100 hover:bg-stone-200 text-stone-900"
+                      : isActive
+                      ? "bg-stone-100 text-stone-900"
+                      : "text-stone-500 hover:bg-stone-50 hover:text-stone-900"
+                  } relative flex items-center gap-2 px-4 py-2 rounded-xl transition`
+                }
               >
+
                 <Icon size={18} />
 
-                <span className="hidden lg:block text-sm">
+                <span className="hidden lg:block text-sm font-medium">
                   {item.label}
                 </span>
 
@@ -148,10 +166,15 @@ export default function Navbar({
                     {item.badge}
                   </span>
                 )}
-              </button>
+
+              </NavLink>
+
             );
+
           })}
+
         </nav>
+
       </div>
     </motion.header>
   );
