@@ -32,7 +32,12 @@ export default function App() {
           />
           <Route
             path="/listing/:id"
-            element={<ItemDetails />}
+            element={
+             <ItemDetails
+              favorites={favorites}
+              onFavoriteToggle={toggleFavorite}
+              />
+            }
           />
           <Route
             path="/favorites"
