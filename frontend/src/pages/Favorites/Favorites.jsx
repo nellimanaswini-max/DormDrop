@@ -1,15 +1,21 @@
 import listingsData from "../../data/listings";
 import ListingCard from "../../components/cards/ListingCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Favorites({
   favorites = [],
   onFavoriteToggle = () => {},
-  onCardClick = () => {},
+  
 }) {
   const favoriteListings = listingsData.filter((listing) =>
     favorites.includes(listing.id)
+  
   );
+  const navigate = useNavigate();
 
+  const handleCardClick = (listing) => {
+  navigate(`/listing/${listing.id}`);
+};
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
       <div className="mb-10">
@@ -42,7 +48,7 @@ export default function Favorites({
               listing={listing}
               isFavorited={true}
               onFavoriteToggle={onFavoriteToggle}
-              onCardClick={onCardClick}
+              onCardClick={handleCardClick}
             />
           ))}
         </div>

@@ -5,6 +5,8 @@ const listingsData = [
     id: 'list-1',
     title: 'Engineering Mathematics Book',
     price: '₹350',
+    description:
+    "Well-maintained engineering mathematics textbook with minimal markings. Perfect for first-year students preparing for semester exams.",
     category: 'Books',
     condition: 'Good',
     campus: 'IIT Bombay',
@@ -27,6 +29,8 @@ const listingsData = [
     id: 'list-2',
     title: 'Dell Inspiron Laptop',
     price: '₹18,000',
+    description:
+    "A Dell laptop in excellent condition. Ideal for programming, online classes, web development and daily college work.",
     category: 'Electronics',
     condition: 'Like New',
     campus: 'IIT Bombay',
@@ -49,6 +53,8 @@ const listingsData = [
     id: 'list-3',
     title: 'Office Chair',
     price: '₹1,200',
+    description:
+    "Comfortable office chair with adjustable height. Great for long study sessions.",
     category: 'Furniture',
     condition: 'Good',
     campus: 'IIT Bombay',
@@ -71,6 +77,8 @@ const listingsData = [
     id: 'list-4',
     title: 'Scientific Calculator',
     price: '₹450',
+    description:
+    "Well-maintained Scientific Calculator with minimal markings. Perfect for first-year students  for semester exams.",
     category: 'Electronics',
     condition: 'Brand New',
     campus: 'IIT Bombay',
@@ -92,6 +100,8 @@ const listingsData = [
     id: 'list-5',
     title: 'Study Table',
     price: '₹2,500',
+    description:
+    "Well-maintained Table with minimal damage. Perfect for first-year students for everyday use.",
     category: 'Furniture',
     condition: 'Excellent',
     campus: 'IIT Bombay',
@@ -114,6 +124,8 @@ const listingsData = [
     id: 'list-6',
     title: 'Sony Headphones',
     price: '₹1,500',
+    description:
+    "used for only 1 month, good sound quality",
     category: 'Electronics',
     condition: 'Like New',
     campus: 'IIT Bombay',
@@ -136,6 +148,8 @@ const listingsData = [
     id: 'list-7',
     title: 'Mountain Cycle',
     price: '₹3,500',
+    description:
+    "Well-maintained and in good condition",
     category: 'Vehicles',
     condition: 'Good',
     campus: 'IIT Bombay',
@@ -158,6 +172,8 @@ const listingsData = [
     id: 'list-8',
     title: 'Hostel Mattress',
     price: '₹800',
+    description:
+    "Well-maintained queen size",
     category: 'Furniture',
     condition: 'Good',
     campus: 'IIT Bombay',

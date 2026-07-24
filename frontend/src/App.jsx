@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-
+import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import Layout from "./components/layout/Layout";
 
 import Home from "./pages/Home/Home";
@@ -30,7 +30,10 @@ export default function App() {
               />
             }
           />
-
+          <Route
+            path="/listing/:id"
+            element={<ItemDetails />}
+          />
           <Route
             path="/favorites"
             element={

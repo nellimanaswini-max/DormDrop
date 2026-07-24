@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Hero from "./Hero";
 import MarketplaceGrid from "./MarketplaceGrid";
+import { useNavigate } from "react-router-dom";
 
 export default function Home({
   favorites,
@@ -8,7 +9,10 @@ export default function Home({
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const navigate = useNavigate();
+  const handleCardClick = (listing) => {
+    navigate(`/listing/${listing.id}`);
+};
   return (
     <>
       <Hero
@@ -17,6 +21,7 @@ export default function Home({
       />
 
       <MarketplaceGrid
+        onCardClick={handleCardClick}
         searchQuery={searchQuery}
         selectedCategory={selectedCategory}
         favorites={favorites}
