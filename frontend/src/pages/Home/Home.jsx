@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function Home({
   favorites,
   onFavoriteToggle,
+  listings,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -21,6 +22,7 @@ export default function Home({
       />
 
       <MarketplaceGrid
+        listings={listings}
         onCardClick={handleCardClick}
         searchQuery={searchQuery}
         selectedCategory={selectedCategory}
