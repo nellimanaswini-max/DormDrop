@@ -1,16 +1,14 @@
-import listingsData from "../../data/listings";
 import ListingCard from "../../components/cards/ListingCard";
 import { useNavigate } from "react-router-dom";
 
 export default function Favorites({
+  listings = [],
   favorites = [],
   onFavoriteToggle = () => {},
-  
 }) {
-  const favoriteListings = listingsData.filter((listing) =>
-    favorites.includes(listing.id)
-  
-  );
+  const favoriteListings = listings.filter((listing) =>
+  favorites.includes(listing.id)
+);
   const navigate = useNavigate();
 
   const handleCardClick = (listing) => {

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateListing({ addListing }) {
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -27,6 +28,8 @@ export default function CreateListing({ addListing }) {
   const newListing = {
     id: crypto.randomUUID(),
 
+    userId: "current-user",
+
     title,
     price,
     category,
@@ -35,8 +38,7 @@ export default function CreateListing({ addListing }) {
 
     campus: "NIAT",
 
-    image:
-        "https://placehold.co/600x600/F5F5F4/444?text=DormDrop",
+    image: image || "https://placehold.co/600x600/F5F5F4/444?text=DormDrop",
 
     seller: {
         name: "You",
@@ -74,7 +76,10 @@ export default function CreateListing({ addListing }) {
         Sell something another student might need.
       </p>
 
-      <ImageUploader />
+      <ImageUploader
+        image={image}
+        setImage={setImage}
+        />
 
       <ListingForm
         title={title}

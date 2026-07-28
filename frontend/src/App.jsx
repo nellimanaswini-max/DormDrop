@@ -5,6 +5,7 @@ import Layout from "./components/layout/Layout";
 import CreateListing from "./pages/CreateListing/CreateListing";
 import listingsData from "./data/listings";
 import { Toaster } from "react-hot-toast";
+import Profile from "./pages/Profile/Profile"; 
 
 import Home from "./pages/Home/Home";
 import Favorites from "./pages/Favorites/Favorites"; // Keep your current folder spelling
@@ -14,6 +15,11 @@ export default function App() {
   const [listings, setListings] = useState(listingsData);
   const addListing = (newListing) => {
   setListings((prev) => [newListing, ...prev]);
+  };
+  const deleteListing = (id) => {
+    setListings((prev) =>
+      prev.filter((listing) => listing.id !== id)
+    );
   };
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
@@ -48,9 +54,10 @@ export default function App() {
           <Route
             path="/listing/:id"
             element={
-             <ItemDetails
-              favorites={favorites}
-              onFavoriteToggle={toggleFavorite}
+              <ItemDetails
+                listings={listings}
+                favorites={favorites}
+                onFavoriteToggle={toggleFavorite}
               />
             }
           />
@@ -66,8 +73,18 @@ export default function App() {
             path="/favorites"
             element={
               <Favorites
+                listings={listings}
                 favorites={favorites}
                 onFavoriteToggle={toggleFavorite}
+              />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Profile
+                listings={listings}
+                deleteListing={deleteListing}
               />
             }
           />

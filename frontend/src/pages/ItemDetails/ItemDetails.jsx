@@ -1,17 +1,23 @@
 import { useParams } from "react-router-dom";
-import listingsData from "../../data/listings";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ContactModal from "../../components/ui/ContactModal";
 
 export default function ItemDetails({
+  listings,
   favorites,
   onFavoriteToggle,
 }) {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const listing = listingsData.find(
-    (item) => item.id === id
-  );
+     useEffect(() => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+    });
+    }, []);
+  const listing = listings.find(
+  (item) => item.id === id
+);
 
   if (!listing) {
     return (

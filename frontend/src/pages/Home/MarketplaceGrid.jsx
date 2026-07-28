@@ -36,9 +36,15 @@ export default function MarketplaceGrid({
   const displayListings =
   listings && listings.length > 0 ? listings : listingsData;
     const filteredListings = displayListings.filter((listing) => {
-  const matchesSearch =
-    listing.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const query = searchQuery.toLowerCase();
 
+  const matchesSearch =
+    listing.title.toLowerCase().includes(query) ||
+    listing.category.toLowerCase().includes(query) ||
+    listing.description.toLowerCase().includes(query) ||
+    listing.condition.toLowerCase().includes(query) ||
+    listing.campus.toLowerCase().includes(query);
+    
   const matchesCategory =
     selectedCategory === "" ||
     listing.category === selectedCategory;
