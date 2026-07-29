@@ -1,8 +1,11 @@
+import { useState } from "react";
 import toast from "react-hot-toast";
 export default function Profile({
   listings,
   deleteListing,
+  editListing,
 }) {
+    const [editingListing, setEditingListing] = useState(null);
     const myListings = listings.filter(
   (listing) => listing.userId === "current-user"
 );
@@ -54,9 +57,10 @@ export default function Profile({
                 <div className="flex gap-3">
 
                     <button
-                    className="px-4 py-2 rounded-xl bg-blue-600 text-white"
-                    >
-                    Edit
+                        onClick={() => setEditingListing(listing)}
+                        className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+                        >
+                        Edit
                     </button>
 
                    <button
@@ -86,6 +90,127 @@ export default function Profile({
     </div>
 
  </div>
+ {editingListing && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl p-8 w-full max-w-lg">
+      <h2 className="text-2xl font-bold mb-6">
+        Edit Listing
+      </h2>
+      <div className="relative bg-white rounded-2xl p-8 w-full max-w-lg">
+          <button
+            onClick={() => setEditingListing(null)}
+            className="absolute top-4 right-4 text-2xl text-stone-500 hover:text-black"
+          >
+            ✕
+          </button>
+        </div>
+      <label className="block text-sm font-semibold text-stone-700 mb-2">
+        Title
+      </label>
+      <input
+        type="text"
+        value={editingListing.title}
+        onChange={(e) =>
+          setEditingListing({
+            ...editingListing,
+            title: e.target.value,
+          })
+        }
+        className="w-full border rounded-xl p-3"
+      />
+      <label className="block text-sm font-semibold text-stone-700 mt-4 mb-2">
+        Price
+      </label>
+      {/* NEW: Price */}
+      <input
+        type="number"
+        value={editingListing.price}
+        onChange={(e) =>
+          setEditingListing({
+            ...editingListing,
+            price: Number(e.target.value),
+          })
+        }
+        placeholder="Price"
+        className="w-full border rounded-xl p-3 mt-4"
+      />
+      <label className="block text-sm font-semibold text-stone-700 mt-4 mb-2">
+        Category
+      </label>
+      <select
+        value={editingListing.category}
+        onChange={(e) =>
+          setEditingListing({
+            ...editingListing,
+            category: e.target.value,
+          })
+        }
+        className="w-full border rounded-xl p-3 mt-4"
+      >
+        <option value="Books">Books</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Furniture">Furniture</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Others">Others</option>
+      </select>
+      <label className="block text-sm font-semibold text-stone-700 mt-4 mb-2">
+        Condition
+      </label>
+      <select
+        value={editingListing.condition}
+        onChange={(e) =>
+          setEditingListing({
+            ...editingListing,
+            condition: e.target.value,
+          })
+        }
+        className="w-full border rounded-xl p-3 mt-4"
+      >
+        <option value="New">New</option>
+        <option value="Like New">Like New</option>
+        <option value="Good">Good</option>
+        <option value="Fair">Fair</option>
+      </select>
+      <label className="block text-sm font-semibold text-stone-700 mt-4 mb-2">
+        Description
+      </label>
+      {/* NEW: Description */}
+      <textarea
+        value={editingListing.description}
+        onChange={(e) =>
+          setEditingListing({
+            ...editingListing,
+            description: e.target.value,
+          })
+        }
+        rows={4}
+        placeholder="Description"
+        className="w-full border rounded-xl p-3 mt-4"
+      />
+
+      <div className="flex justify-end gap-3 mt-6">
+        <button
+          onClick={() => setEditingListing(null)}
+          className="px-5 py-2 rounded-xl bg-stone-300"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={() => {
+            editListing(editingListing);
+            toast.success("Listing updated successfully!");
+            setEditingListing(null);
+          }}
+          className="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+        >
+          Save Changes
+        </button>
+        
+      </div>
+    </div>
+  </div>
+)}
     </section>
   );
 }

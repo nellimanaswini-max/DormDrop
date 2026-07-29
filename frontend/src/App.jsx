@@ -21,6 +21,15 @@ export default function App() {
       prev.filter((listing) => listing.id !== id)
     );
   };
+  const editListing = (updatedListing) => {
+    setListings((prev) =>
+      prev.map((listing) =>
+        listing.id === updatedListing.id
+          ? updatedListing
+          : listing
+      )
+    );
+  };
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
       prev.includes(id)
@@ -85,6 +94,7 @@ export default function App() {
               <Profile
                 listings={listings}
                 deleteListing={deleteListing}
+                editListing={editListing}
               />
             }
           />
