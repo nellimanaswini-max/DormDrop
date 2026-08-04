@@ -1,18 +1,38 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import Layout from "./components/layout/Layout";
 import CreateListing from "./pages/CreateListing/CreateListing";
 import listingsData from "./data/listings";
 import { Toaster } from "react-hot-toast";
 import Profile from "./pages/Profile/Profile"; 
-
 import Home from "./pages/Home/Home";
 import Favorites from "./pages/Favorites/Favorites"; // Keep your current folder spelling
+
+import api from "./services/api";
 
 export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [listings, setListings] = useState(listingsData);
+  useEffect(() => {
+  const fetchListings = async () => {
+    try {
+      const response = await api.get("/listings");
+
+      console.log("Backend listings:", response.data.listings);
+
+      const normalizedListings = response.data.listings.map((listing) => ({
+        ...listing,
+        id: listing._id,
+      }));
+      setListings(normalizedListings);
+    } catch (error) {
+      console.error("Failed to fetch listings:", error);
+    }
+  };
+
+  fetchListings();
+}, []);
   const addListing = (newListing) => {
   setListings((prev) => [newListing, ...prev]);
   };
