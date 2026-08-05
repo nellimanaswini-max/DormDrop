@@ -1,46 +1,65 @@
+import Login from "./pages/Login/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import Layout from "./components/layout/Layout";
 import CreateListing from "./pages/CreateListing/CreateListing";
 import listingsData from "./data/listings";
 import { Toaster } from "react-hot-toast";
-import Profile from "./pages/Profile/Profile"; 
+import Profile from "./pages/Profile/Profile";
 import Home from "./pages/Home/Home";
-import Favorites from "./pages/Favorites/Favorites"; // Keep your current folder spelling
+import Favorites from "./pages/Favorites/Favorites";
 
 import api from "./services/api";
 
 export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [listings, setListings] = useState(listingsData);
+
+  // =========================
+  // FETCH LISTINGS FROM BACKEND
+  // =========================
   useEffect(() => {
-  const fetchListings = async () => {
-    try {
-      const response = await api.get("/listings");
+    const fetchListings = async () => {
+      try {
+        const response = await api.get("/listings");
 
-      console.log("Backend listings:", response.data.listings);
+        console.log("Backend listings:", response.data.listings);
 
-      const normalizedListings = response.data.listings.map((listing) => ({
-        ...listing,
-        id: listing._id,
-      }));
-      setListings(normalizedListings);
-    } catch (error) {
-      console.error("Failed to fetch listings:", error);
-    }
-  };
+        const normalizedListings = response.data.listings.map((listing) => ({
+          ...listing,
+          id: listing._id,
+        }));
 
-  fetchListings();
-}, []);
+        setListings(normalizedListings);
+      } catch (error) {
+        console.error("Failed to fetch listings:", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  // =========================
+  // ADD LISTING
+  // =========================
   const addListing = (newListing) => {
-  setListings((prev) => [newListing, ...prev]);
+    setListings((prev) => [newListing, ...prev]);
   };
+
+  // =========================
+  // DELETE LISTING
+  // =========================
   const deleteListing = (id) => {
     setListings((prev) =>
       prev.filter((listing) => listing.id !== id)
     );
   };
+
+  // =========================
+  // EDIT LISTING
+  // =========================
   const editListing = (updatedListing) => {
     setListings((prev) =>
       prev.map((listing) =>
@@ -50,6 +69,10 @@ export default function App() {
       )
     );
   };
+
+  // =========================
+  // FAVORITES
+  // =========================
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
       prev.includes(id)
@@ -57,10 +80,11 @@ export default function App() {
         : [...prev, id]
     );
   };
+
   console.log("Favorites:", favorites);
+
   return (
     <BrowserRouter>
-
       <Toaster
         position="top-right"
         toastOptions={{
@@ -70,6 +94,13 @@ export default function App() {
 
       <Layout>
         <Routes>
+          {/* LOGIN */}
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+
+          {/* HOME */}
           <Route
             path="/"
             element={
@@ -80,6 +111,8 @@ export default function App() {
               />
             }
           />
+
+          {/* ITEM DETAILS */}
           <Route
             path="/listing/:id"
             element={
@@ -90,14 +123,18 @@ export default function App() {
               />
             }
           />
+
+          {/* CREATE LISTING */}
           <Route
             path="/create"
             element={
               <CreateListing
-              addListing={addListing}
+                addListing={addListing}
               />
             }
           />
+
+          {/* FAVORITES */}
           <Route
             path="/favorites"
             element={
@@ -108,6 +145,8 @@ export default function App() {
               />
             }
           />
+
+          {/* PROFILE */}
           <Route
             path="/profile"
             element={
