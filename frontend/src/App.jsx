@@ -1,3 +1,4 @@
+import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -16,8 +17,13 @@ import api from "./services/api";
 export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [listings, setListings] = useState(listingsData);
+  const [currentUser, setCurrentUser] = useState(() => {
+  const storedUser = localStorage.getItem("user");
+  return storedUser ? JSON.parse(storedUser) : null;
+});
 
-  // =========================
+  console.log("Current user:", currentUser);  
+// =========================
   // FETCH LISTINGS FROM BACKEND
   // =========================
   useEffect(() => {
@@ -92,14 +98,23 @@ export default function App() {
         }}
       />
 
-      <Layout>
+      <Layout
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+      >
         <Routes>
           {/* LOGIN */}
           <Route
             path="/login"
-            element={<Login />}
+            element={
+              <Login setCurrentUser={setCurrentUser} />
+            }
           />
-
+          {/* REGISTER */}
+          <Route
+            path="/register"
+            element={<Register />}
+          />
           {/* HOME */}
           <Route
             path="/"

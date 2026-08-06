@@ -1,10 +1,17 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-export default function Layout({ children }) {
+export default function Layout({
+  children,
+  currentUser,
+  setCurrentUser,
+}) {
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col">
-      <Navbar />
+      <Navbar
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+      />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
         {children}

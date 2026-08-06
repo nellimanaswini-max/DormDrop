@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";import toast from "react-hot-toast";
 import api from "../../services/api";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
+export default function Login({ setCurrentUser }) {
+      const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export default function Login() {
       "user",
       JSON.stringify(response.data.user)
     );
-
+    setCurrentUser(response.data.user);
     toast.success("Welcome back!");
 
     navigate("/");
