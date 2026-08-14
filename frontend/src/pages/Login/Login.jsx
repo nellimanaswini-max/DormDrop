@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../../services/api";
 
 export default function Login({ setCurrentUser }) {
@@ -26,7 +27,7 @@ export default function Login({ setCurrentUser }) {
     setCurrentUser(response.data.user);
     toast.success("Welcome back!");
 
-    navigate("/");
+  navigate("/home");
   } catch (error) {
     console.error("Login failed:", error);
 

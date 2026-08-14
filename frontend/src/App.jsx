@@ -1,3 +1,4 @@
+import Landing from "./pages/Landing/Landing";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -103,6 +104,12 @@ export default function App() {
         setCurrentUser={setCurrentUser}
       >
         <Routes>
+          {/*LANDING*/}
+          <Route
+            path="/"
+            element={<Landing />}
+          />
+          
           {/* LOGIN */}
           <Route
             path="/login"
@@ -117,7 +124,7 @@ export default function App() {
           />
           {/* HOME */}
           <Route
-            path="/"
+            path="/home"
             element={
               <Home
                 listings={listings}

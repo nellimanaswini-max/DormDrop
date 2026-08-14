@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { NavLink } from "react-router-dom";
-import {
+import { NavLink, useNavigate } from "react-router-dom";import {
   Sparkles,
   Heart,
   Plus,
@@ -12,12 +11,20 @@ import {
 } from "lucide-react";
 
 export default function Navbar({
-  selectedCampus = "Your Campus",
-  setSelectedCampus = () => {},
+  currentUser,
+  setCurrentUser,
   unreadMessagesCount = 0,
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+    const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
+    setCurrentUser(null);
+    setDropdownOpen(false);
+    navigate("/login");
+  };
   const navItems = [
     {
       label: "Explore",
@@ -48,7 +55,6 @@ export default function Navbar({
     },
   ];
 
-  const campuses = ["Your Campus"];
 
   return (
     <motion.header
@@ -89,7 +95,7 @@ export default function Navbar({
               <MapPin size={15} />
 
               <span className="text-xs font-semibold">
-                {selectedCampus}
+                {currentUser?.campus || "Your Campus"}
               </span>
 
               <ChevronDown size={14} />
@@ -104,22 +110,23 @@ export default function Navbar({
 
                 <div className="absolute left-0 mt-2 w-52 bg-white rounded-xl border border-stone-200 shadow-lg py-2 z-50">
 
-                  {campuses.map((campus) => (
-                    <button
-                      key={campus}
-                      onClick={() => {
-                        setSelectedCampus(campus);
-                        setDropdownOpen(false);
-                      }}
-                      className={`w-full px-4 py-2 text-left text-sm transition ${
-                        selectedCampus === campus
-                          ? "bg-stone-100 text-stone-900"
-                          : "hover:bg-stone-50 text-stone-600"
-                      }`}
-                    >
-                      {campus}
-                    </button>
-                  ))}
+                  <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl border border-stone-200 shadow-lg py-3 z-50">
+                    <div className="px-4 py-2">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">
+                        Your Campus
+                      </p>
+
+                      <p className="mt-1 text-sm font-bold text-stone-900">
+                        {currentUser?.campus || "Not selected"}
+                      </p>
+
+                      {currentUser?.residenceHall && (
+                        <p className="mt-1 text-xs text-stone-500">
+                          {currentUser.residenceHall}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
                 </div>
               </>
@@ -134,11 +141,9 @@ export default function Navbar({
         <nav className="flex items-center gap-2">
 
           {navItems.map((item) => {
-
             const Icon = item.icon;
 
             return (
-
               <NavLink
                 key={item.path}
                 to={item.path}
@@ -154,7 +159,6 @@ export default function Navbar({
                   } relative flex items-center gap-2 px-4 py-2 rounded-xl transition`
                 }
               >
-
                 <Icon size={18} />
 
                 <span className="hidden lg:block text-sm font-medium">
@@ -166,12 +170,33 @@ export default function Navbar({
                     {item.badge}
                   </span>
                 )}
-
               </NavLink>
-
             );
-
           })}
+
+          {/* Logged-in user */}
+          {currentUser && (
+            <div className="flex items-center gap-2 ml-2 pl-2 border-l border-stone-200">
+
+              <div className="hidden sm:block text-right">
+                <p className="text-xs font-bold text-stone-900">
+                  {currentUser.name}
+                </p>
+
+                <p className="text-[11px] text-stone-500">
+                  {currentUser.campus}
+                </p>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="px-3 py-2 rounded-xl text-sm font-semibold text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition"
+              >
+                Logout
+              </button>
+
+            </div>
+          )}
 
         </nav>
 
