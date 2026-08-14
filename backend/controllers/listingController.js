@@ -8,7 +8,6 @@ const createListing = async (req, res) => {
             category,
             condition,
             description,
-            residenceHall,
             image,
             isDonation,
         } = req.body;
@@ -31,10 +30,15 @@ const createListing = async (req, res) => {
             category,
             condition,
             description,
-            residenceHall,
+
+            // Automatically use the logged-in user's details
+            campus: req.user.campus,
+            residenceHall: req.user.residenceHall,
+
             image,
             isDonation,
 
+            // Automatically identify the seller
             seller: req.user._id,
         });
 

@@ -1,73 +1,137 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageUploader from "../../components/create-listing/ImageUploader";
 import ListingForm from "../../components/create-listing/ListingForm";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 export default function CreateListing({ addListing }) {
   const [image, setImage] = useState(null);
-  const navigate = useNavigate();
+
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
-  const [residenceHall, setResidenceHall] = useState("");
   const [description, setDescription] = useState("");
 
-  const handlePublish = () => {
-    if (
-        !title ||
-        !price ||
-        !category ||
-        !condition ||
-        !description
-        ) {
-        toast.error("Please fill in all required fields.");
-        return;
-        }
-  const newListing = {
-    id: crypto.randomUUID(),
+  const [campus, setCampus] = useState("");
+  const [residenceHall, setResidenceHall] = useState("");
 
-    userId: "current-user",
+  const navigate = useNavigate();
 
-    title,
-    price,
-    category,
-    condition,
-    description,
+  // --------------------------------
+  // GET LOGGED-IN USER
+  // --------------------------------
 
-    campus: "NIAT",
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await api.get("/auth/me");
 
-    image: image || "https://placehold.co/600x600/F5F5F4/444?text=DormDrop",
+        const user = response.data.user;
 
-    seller: {
-        name: "You",
-        avatar: "",
-        verified: true,
-        rating: 5,
-    },
+        setCampus(user.campus || "");
+        setResidenceHall(user.residenceHall || "");
 
-    createdAt: "Just now",
+      } catch (error) {
+        console.error(
+          "Failed to fetch current user:",
+          error
+        );
 
-    isDonation: false,
+        toast.error(
+          "Unable to load your account details."
+        );
+      }
     };
 
-  addListing(newListing);
-  toast.success("Listing published successfully!");
-  navigate("/", { replace: true });
-  console.log(newListing);
+    fetchCurrentUser();
+  }, []);
 
-  // Reset the form
-  setTitle("");
-  setPrice("");
-  setCategory("");
-  setCondition("");
-  setResidenceHall("");
-  setDescription("");
-};
+  // --------------------------------
+  // PUBLISH LISTING
+  // --------------------------------
+
+  const handlePublish = async () => {
+    if (
+      !title ||
+      !price ||
+      !category ||
+      !condition ||
+      !description
+    ) {
+      toast.error(
+        "Please fill in all required fields."
+      );
+      return;
+    }
+
+    try {
+      const response = await api.post("/listings", {
+        title: title.trim(),
+        price: Number(price),
+        category,
+        condition,
+        description: description.trim(),
+
+        image:
+          image ||
+          "https://placehold.co/600x600/F5F5F4/444?text=DormDrop",
+
+        isDonation: false,
+      });
+
+      console.log(
+        "Created listing:",
+        response.data
+      );
+
+      const createdListing =
+        response.data.listing;
+
+      const normalizedListing = {
+        ...createdListing,
+        id: createdListing._id,
+      };
+
+      if (addListing) {
+        addListing(normalizedListing);
+      }
+
+      toast.success(
+        "Listing published successfully!"
+      );
+
+      navigate("/home", {
+        replace: true,
+      });
+
+      // Reset form
+
+      setTitle("");
+      setPrice("");
+      setCategory("");
+      setCondition("");
+      setDescription("");
+      setImage(null);
+
+    } catch (error) {
+      console.error(
+        "Failed to create listing:",
+        error
+      );
+
+      const message =
+        error.response?.data?.message ||
+        "Failed to publish listing. Please try again.";
+
+      toast.error(message);
+    }
+  };
 
   return (
     <section className="max-w-3xl mx-auto px-6 py-16">
+
       <h1 className="text-5xl font-black text-stone-900">
         📦 Create Listing
       </h1>
@@ -79,23 +143,30 @@ export default function CreateListing({ addListing }) {
       <ImageUploader
         image={image}
         setImage={setImage}
-        />
+      />
 
       <ListingForm
         title={title}
         setTitle={setTitle}
+
         price={price}
         setPrice={setPrice}
+
         category={category}
         setCategory={setCategory}
+
         condition={condition}
         setCondition={setCondition}
-        residenceHall={residenceHall}
-        setResidenceHall={setResidenceHall}
+
         description={description}
         setDescription={setDescription}
+
+        campus={campus}
+        residenceHall={residenceHall}
+
         handlePublish={handlePublish}
       />
+
     </section>
   );
 }

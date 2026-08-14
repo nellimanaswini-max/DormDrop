@@ -29,7 +29,7 @@ export default function Navbar({
     {
       label: "Explore",
       icon: Sparkles,
-      path: "/",
+      path: "/home",
     },
     {
       label: "Favorites",

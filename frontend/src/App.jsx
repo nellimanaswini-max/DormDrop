@@ -3,6 +3,7 @@ import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import Layout from "./components/layout/Layout";
@@ -109,7 +110,7 @@ export default function App() {
             path="/"
             element={<Landing />}
           />
-          
+
           {/* LOGIN */}
           <Route
             path="/login"
@@ -126,11 +127,13 @@ export default function App() {
           <Route
             path="/home"
             element={
-              <Home
-                listings={listings}
-                favorites={favorites}
-                onFavoriteToggle={toggleFavorite}
-              />
+              <ProtectedRoute currentUser={currentUser}>
+                <Home
+                  listings={listings}
+                  favorites={favorites}
+                  onFavoriteToggle={toggleFavorite}
+                />
+              </ProtectedRoute>
             }
           />
 
@@ -138,11 +141,13 @@ export default function App() {
           <Route
             path="/listing/:id"
             element={
-              <ItemDetails
-                listings={listings}
-                favorites={favorites}
-                onFavoriteToggle={toggleFavorite}
-              />
+              <ProtectedRoute currentUser={currentUser}>
+                <ItemDetails
+                  listings={listings}
+                  favorites={favorites}
+                  onFavoriteToggle={toggleFavorite}
+                />
+              </ProtectedRoute>
             }
           />
 
@@ -150,9 +155,11 @@ export default function App() {
           <Route
             path="/create"
             element={
-              <CreateListing
-                addListing={addListing}
-              />
+              <ProtectedRoute currentUser={currentUser}>
+                <CreateListing
+                  addListing={addListing}
+                />
+              </ProtectedRoute>
             }
           />
 
@@ -160,11 +167,13 @@ export default function App() {
           <Route
             path="/favorites"
             element={
-              <Favorites
-                listings={listings}
-                favorites={favorites}
-                onFavoriteToggle={toggleFavorite}
-              />
+              <ProtectedRoute currentUser={currentUser}>
+                <Favorites
+                  listings={listings}
+                  favorites={favorites}
+                  onFavoriteToggle={toggleFavorite}
+                />
+              </ProtectedRoute>
             }
           />
 
@@ -172,11 +181,13 @@ export default function App() {
           <Route
             path="/profile"
             element={
-              <Profile
-                listings={listings}
-                deleteListing={deleteListing}
-                editListing={editListing}
-              />
+              <ProtectedRoute currentUser={currentUser}>
+                <Profile
+                  listings={listings}
+                  deleteListing={deleteListing}
+                  editListing={editListing}
+                />
+              </ProtectedRoute>
             }
           />
         </Routes>
