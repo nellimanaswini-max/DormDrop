@@ -14,8 +14,6 @@ export default function CreateListing({
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
-  const [residenceHall, setResidenceHall] =
-    useState("");
   const [description, setDescription] =
     useState("");
 
@@ -110,25 +108,12 @@ export default function CreateListing({
       toast.success(
         "Listing published successfully!"
       );
-
-
-      // ========================================
-      // RESET FORM
-      // ========================================
-
       setTitle("");
       setPrice("");
       setCategory("");
       setCondition("");
-      setResidenceHall("");
       setDescription("");
       setImage(null);
-
-
-      // ========================================
-      // GO TO HOME
-      // ========================================
-
       navigate("/home", {
         replace: true,
       });
@@ -196,9 +181,6 @@ export default function CreateListing({
 
         condition={condition}
         setCondition={setCondition}
-
-        residenceHall={residenceHall}
-        setResidenceHall={setResidenceHall}
 
         description={description}
         setDescription={setDescription}
