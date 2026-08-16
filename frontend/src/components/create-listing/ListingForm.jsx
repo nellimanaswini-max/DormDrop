@@ -7,8 +7,8 @@ export default function ListingForm({
   setCategory,
   condition,
   setCondition,
+  campus,
   residenceHall,
-  setResidenceHall,
   description,
   setDescription,
   handlePublish,
@@ -39,7 +39,8 @@ export default function ListingForm({
         </label>
 
         <input
-          type="text"
+          type="number"
+          min="0"
           placeholder="e.g. ₹18,000"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
@@ -91,20 +92,49 @@ export default function ListingForm({
 
       </div>
 
-      {/* Residence Hall */}
+      {/* Account Location */}
 
       <div className="mt-8">
+
         <label className="block text-lg font-bold mb-3">
-          Residence Hall
+          Listing Location
         </label>
 
-        <input
-          type="text"
-          placeholder="e.g. Hostel 12"
-          value={residenceHall}
-          onChange={(e) => setResidenceHall(e.target.value)}
-          className="w-full border border-stone-300 rounded-2xl px-5 py-4"
-        />
+        <div className="rounded-2xl border border-stone-200 bg-stone-50 px-5 py-4">
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+              <p className="text-sm text-stone-500">
+                Campus
+              </p>
+
+              <p className="font-bold text-stone-900">
+                📍 {campus || "Loading campus..."}
+              </p>
+            </div>
+
+            <div className="hidden sm:block h-10 w-px bg-stone-200" />
+
+            <div>
+              <p className="text-sm text-stone-500">
+                Residence Hall
+              </p>
+
+              <p className="font-bold text-stone-900">
+                🏠 {residenceHall || "Loading residence hall..."}
+              </p>
+            </div>
+
+          </div>
+
+          <p className="mt-3 text-xs text-stone-400">
+            This information comes from your registered account and
+            cannot be changed while creating a listing.
+          </p>
+
+        </div>
+
       </div>
 
       {/* Description */}
