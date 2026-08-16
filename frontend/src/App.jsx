@@ -1,74 +1,171 @@
 import Landing from "./pages/Landing/Landing";
 import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
+
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import Layout from "./components/layout/Layout";
 import CreateListing from "./pages/CreateListing/CreateListing";
-import listingsData from "./data/listings";
-import { Toaster } from "react-hot-toast";
 import Profile from "./pages/Profile/Profile";
 import Home from "./pages/Home/Home";
 import Favorites from "./pages/Favorites/Favorites";
 
+import { Toaster } from "react-hot-toast";
+
 import api from "./services/api";
 
+
 export default function App() {
+
+  // ==========================================
+  // FAVORITES
+  // ==========================================
+
   const [favorites, setFavorites] = useState([]);
-  const [listings, setListings] = useState(listingsData);
+
+
+  // ==========================================
+  // LISTINGS
+  // ==========================================
+
+  const [listings, setListings] = useState([]);
+
+
+  // ==========================================
+  // CURRENT USER
+  // ==========================================
+
   const [currentUser, setCurrentUser] = useState(() => {
-  const storedUser = localStorage.getItem("user");
-  return storedUser ? JSON.parse(storedUser) : null;
-});
 
-  console.log("Current user:", currentUser);  
-// =========================
-  // FETCH LISTINGS FROM BACKEND
-  // =========================
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const response = await api.get("/listings");
+    const storedUser =
+      localStorage.getItem("user");
 
-        console.log("Backend listings:", response.data.listings);
+    return storedUser
+      ? JSON.parse(storedUser)
+      : null;
 
-        const normalizedListings = response.data.listings.map((listing) => ({
+  });
+
+
+// ==========================================
+// FETCH LISTINGS FROM BACKEND
+// ==========================================
+
+const fetchListings = useCallback(async () => {
+  try {
+    const response = await api.get("/listings");
+
+    console.log(
+      "Backend listings:",
+      response.data.listings
+    );
+
+    const normalizedListings =
+      response.data.listings.map((listing) => ({
+        ...listing,
+        id: listing._id,
+      }));
+
+    setListings(normalizedListings);
+
+  } catch (error) {
+    console.error(
+      "Failed to fetch listings:",
+      error
+    );
+  }
+}, []);
+
+
+// ==========================================
+// LOAD LISTINGS WHEN APP STARTS
+// ==========================================
+
+useEffect(() => {
+  let cancelled = false;
+
+  const loadListings = async () => {
+    try {
+      const response = await api.get("/listings");
+
+      console.log(
+        "Backend listings:",
+        response.data.listings
+      );
+
+      const normalizedListings =
+        response.data.listings.map((listing) => ({
           ...listing,
           id: listing._id,
         }));
 
+      if (!cancelled) {
         setListings(normalizedListings);
-      } catch (error) {
-        console.error("Failed to fetch listings:", error);
       }
-    };
 
-    fetchListings();
-  }, []);
+    } catch (error) {
+      console.error(
+        "Failed to fetch listings:",
+        error
+      );
+    }
+  };
 
-  // =========================
+  loadListings();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+  // ==========================================
   // ADD LISTING
-  // =========================
+  // ==========================================
+
   const addListing = (newListing) => {
-    setListings((prev) => [newListing, ...prev]);
+
+    setListings((prev) => [
+      newListing,
+      ...prev,
+    ]);
+
   };
 
-  // =========================
+
+  // ==========================================
   // DELETE LISTING
-  // =========================
+  // ==========================================
+
   const deleteListing = (id) => {
+
     setListings((prev) =>
-      prev.filter((listing) => listing.id !== id)
+      prev.filter(
+        (listing) =>
+          listing.id !== id
+      )
     );
+
   };
 
-  // =========================
+
+  // ==========================================
   // EDIT LISTING
-  // =========================
+  // ==========================================
+
   const editListing = (updatedListing) => {
+
     setListings((prev) =>
       prev.map((listing) =>
         listing.id === updatedListing.id
@@ -76,23 +173,44 @@ export default function App() {
           : listing
       )
     );
+
   };
 
-  // =========================
-  // FAVORITES
-  // =========================
+
+  // ==========================================
+  // FAVORITE TOGGLE
+  // ==========================================
+
   const toggleFavorite = (id) => {
+
     setFavorites((prev) =>
+
       prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
+
+        ? prev.filter(
+            (item) => item !== id
+          )
+
+        : [
+            ...prev,
+            id,
+          ]
+
     );
+
   };
 
-  console.log("Favorites:", favorites);
+
+  // ==========================================
+  // APP
+  // ==========================================
 
   return (
+
     <BrowserRouter>
+
+      {/* TOAST */}
+
       <Toaster
         position="top-right"
         toastOptions={{
@@ -100,98 +218,226 @@ export default function App() {
         }}
       />
 
+
       <Layout
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
       >
+
         <Routes>
-          {/*LANDING*/}
+
+
+          {/* =================================
+              LANDING
+          ================================= */}
+
           <Route
             path="/"
-            element={<Landing />}
+            element={
+              <Landing />
+            }
           />
 
-          {/* LOGIN */}
+
+          {/* =================================
+              LOGIN
+          ================================= */}
+
           <Route
             path="/login"
             element={
-              <Login setCurrentUser={setCurrentUser} />
+              <Login
+                setCurrentUser={
+                  setCurrentUser
+                }
+              />
             }
           />
-          {/* REGISTER */}
+
+
+          {/* =================================
+              REGISTER
+          ================================= */}
+
           <Route
             path="/register"
-            element={<Register />}
+            element={
+              <Register />
+            }
           />
-          {/* HOME */}
+
+
+          {/* =================================
+              HOME
+          ================================= */}
+
           <Route
             path="/home"
             element={
-              <ProtectedRoute currentUser={currentUser}>
+
+              <ProtectedRoute
+                currentUser={
+                  currentUser
+                }
+              >
+
                 <Home
-                  listings={listings}
-                  favorites={favorites}
-                  onFavoriteToggle={toggleFavorite}
+                  listings={
+                    listings
+                  }
+
+                  favorites={
+                    favorites
+                  }
+
+                  onFavoriteToggle={
+                    toggleFavorite
+                  }
                 />
+
               </ProtectedRoute>
+
             }
           />
 
-          {/* ITEM DETAILS */}
+
+          {/* =================================
+              ITEM DETAILS
+          ================================= */}
+
           <Route
             path="/listing/:id"
             element={
-              <ProtectedRoute currentUser={currentUser}>
+
+              <ProtectedRoute
+                currentUser={
+                  currentUser
+                }
+              >
+
                 <ItemDetails
-                  listings={listings}
-                  favorites={favorites}
-                  onFavoriteToggle={toggleFavorite}
+                  listings={
+                    listings
+                  }
+
+                  favorites={
+                    favorites
+                  }
+
+                  onFavoriteToggle={
+                    toggleFavorite
+                  }
                 />
+
               </ProtectedRoute>
+
             }
           />
 
-          {/* CREATE LISTING */}
+
+          {/* =================================
+              CREATE LISTING
+          ================================= */}
+
           <Route
             path="/create"
             element={
-              <ProtectedRoute currentUser={currentUser}>
+
+              <ProtectedRoute
+                currentUser={
+                  currentUser
+                }
+              >
+
                 <CreateListing
-                  addListing={addListing}
+                  addListing={
+                    addListing
+                  }
+
+                  refreshListings={
+                    fetchListings
+                  }
                 />
+
               </ProtectedRoute>
+
             }
           />
 
-          {/* FAVORITES */}
+
+          {/* =================================
+              FAVORITES
+          ================================= */}
+
           <Route
             path="/favorites"
             element={
-              <ProtectedRoute currentUser={currentUser}>
+
+              <ProtectedRoute
+                currentUser={
+                  currentUser
+                }
+              >
+
                 <Favorites
-                  listings={listings}
-                  favorites={favorites}
-                  onFavoriteToggle={toggleFavorite}
+                  listings={
+                    listings
+                  }
+
+                  favorites={
+                    favorites
+                  }
+
+                  onFavoriteToggle={
+                    toggleFavorite
+                  }
                 />
+
               </ProtectedRoute>
+
             }
           />
 
-          {/* PROFILE */}
+
+          {/* =================================
+              PROFILE
+          ================================= */}
+
           <Route
             path="/profile"
             element={
-              <ProtectedRoute currentUser={currentUser}>
+
+              <ProtectedRoute
+                currentUser={
+                  currentUser
+                }
+              >
+
                 <Profile
-                  listings={listings}
-                  deleteListing={deleteListing}
-                  editListing={editListing}
+                  listings={
+                    listings
+                  }
+
+                  deleteListing={
+                    deleteListing
+                  }
+
+                  editListing={
+                    editListing
+                  }
                 />
+
               </ProtectedRoute>
+
             }
           />
+
+
         </Routes>
+
       </Layout>
+
     </BrowserRouter>
+
   );
 }

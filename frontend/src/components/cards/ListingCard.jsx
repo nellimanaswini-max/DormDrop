@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import {
   Heart,
@@ -13,27 +12,80 @@ export default function ListingCard({
   onFavoriteToggle = () => {},
   onCardClick = () => {},
 }) {
-  const {
-    listingId = "",
-    id = listingId,
-    title = "Untitled Item",
-    price = 0,
-    category = "Books",
-    condition = "Good",
-    campus = "NIAT",
-    seller = {
-      name: "Student Seller",
-      avatar: "",
-      verified: true,
-      rating: 4.9,
-    },
-    image = "https://placehold.co/600x600/F5F5F4/444?text=DormDrop",
-    isDonation = false,
-    createdAt = "2h ago",
-  } = listing;
+  // ==========================================
+  // SAFE LISTING DATA
+  // ==========================================
 
-  const getConditionStyle = (condition) => {
-    switch (condition) {
+  const title =
+    listing?.title || "Untitled Item";
+
+  const price =
+    listing?.price ?? 0;
+
+  const category =
+    listing?.category || "Others";
+
+  const condition =
+    listing?.condition || "Good";
+
+  const image =
+    listing?.image &&
+    !listing.image.startsWith("blob:")
+      ? listing.image
+      : "https://placehold.co/600x600/F5F5F4/444?text=DormDrop";
+
+  const isDonation =
+    Boolean(listing?.isDonation);
+
+  const createdAt =
+    listing?.createdAt || "Just now";
+
+  // ==========================================
+  // SAFE SELLER
+  // ==========================================
+
+  const seller =
+    listing?.seller || {};
+
+  const sellerName =
+    seller?.name || "Student Seller";
+
+  const sellerAvatar =
+    seller?.avatar ||
+    "https://placehold.co/100x100/E7E5E4/444?text=👤";
+
+  const sellerVerified =
+    Boolean(seller?.verified);
+
+  const sellerRating =
+    seller?.rating ?? 5;
+
+  // ==========================================
+  // CAMPUS
+  // ==========================================
+
+  const campus =
+    listing?.campus ||
+    seller?.campus ||
+    "Campus";
+
+  // ==========================================
+  // LISTING ID
+  // ==========================================
+
+  const itemId =
+    listing?._id ||
+    listing?.id ||
+    listing?.listingId ||
+    "";
+
+  // ==========================================
+  // CONDITION STYLE
+  // ==========================================
+
+  const getConditionStyle = (value) => {
+    switch (value) {
+      case "New":
       case "Brand New":
         return "bg-emerald-100 text-emerald-700 border border-emerald-200";
 
@@ -51,24 +103,55 @@ export default function ListingCard({
     }
   };
 
+  // ==========================================
+  // IMAGE ERROR FALLBACK
+  // ==========================================
+
+  const handleImageError = (e) => {
+    e.currentTarget.src =
+      "https://placehold.co/600x600/F5F5F4/444?text=DormDrop";
+  };
+
+  const handleSellerImageError = (e) => {
+    e.currentTarget.src =
+      "https://placehold.co/100x100/E7E5E4/444?text=👤";
+  };
+
+  // ==========================================
+  // CARD
+  // ==========================================
+
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{
+        opacity: 0,
+        y: 15,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
       whileHover={{
         y: -8,
         scale: 1.02,
       }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      exit={{
+        opacity: 0,
+        scale: 0.95,
+      }}
       transition={{
         duration: 0.45,
       }}
-      onClick={() => onCardClick(listing)}
+      onClick={() =>
+        onCardClick(listing)
+      }
       className="group relative flex flex-col overflow-hidden rounded-3xl bg-white border border-stone-200 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer"
     >
 
-      {/* IMAGE */}
+      {/* ======================================
+          IMAGE
+      ======================================= */}
 
       <div className="relative aspect-square overflow-hidden bg-stone-100">
 
@@ -76,12 +159,13 @@ export default function ListingCard({
           src={image}
           alt={title}
           loading="lazy"
+          onError={handleImageError}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
 
         {/* Overlay */}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
 
         {/* Condition */}
 
@@ -100,14 +184,17 @@ export default function ListingCard({
               FREE
             </span>
           )}
+
         </div>
 
-        {/* Favourite Button */}
+        {/* Favourite */}
 
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
-            onFavoriteToggle(id);
+
+            onFavoriteToggle(itemId);
           }}
           className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg transition hover:scale-125"
         >
@@ -126,22 +213,32 @@ export default function ListingCard({
 
           <div className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 backdrop-blur-sm">
             <MapPin size={12} />
-            <span className="text-[11px]">{campus}</span>
+
+            <span className="text-[11px]">
+              {campus}
+            </span>
           </div>
 
           <div className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 backdrop-blur-sm">
             <Clock size={12} />
-            <span className="text-[11px]">{createdAt}</span>
+
+            <span className="text-[11px]">
+              {createdAt}
+            </span>
           </div>
 
         </div>
 
       </div>
 
-      {/* CONTENT */}
-            <div className="flex flex-1 flex-col justify-between p-5">
 
-        {/* Category */}
+      {/* ======================================
+          CONTENT
+      ======================================= */}
+
+      <div className="flex flex-1 flex-col justify-between p-5">
+
+        {/* Category + Title */}
 
         <div>
 
@@ -149,26 +246,29 @@ export default function ListingCard({
             {category}
           </span>
 
-          {/* Product Title */}
-
           <h3 className="mt-2 line-clamp-2 text-lg font-bold leading-snug text-stone-900 transition group-hover:text-blue-700">
             {title}
           </h3>
 
         </div>
 
+
         {/* Price */}
 
         <div className="mt-5">
 
           <span className="text-[10px] uppercase tracking-widest text-stone-400">
-            {isDonation ? "Donation" : "Price"}
+            {isDonation
+              ? "Donation"
+              : "Price"}
           </span>
 
           <div className="mt-1 flex items-center gap-2">
 
             <span className="text-3xl font-black text-stone-900">
-              {isDonation ? "Free" : `₹${price}`}
+              {isDonation
+                ? "Free"
+                : `₹${price}`}
             </span>
 
             {!isDonation && (
@@ -181,6 +281,7 @@ export default function ListingCard({
 
         </div>
 
+
         {/* Seller */}
 
         <div className="mt-6 flex items-center justify-between border-t border-stone-100 pt-4">
@@ -188,11 +289,11 @@ export default function ListingCard({
           <div className="flex items-center gap-3">
 
             <img
-              src={
-                seller.avatar ||
-                "https://placehold.co/100x100/E7E5E4/444?text=👤"
+              src={sellerAvatar}
+              alt={sellerName}
+              onError={
+                handleSellerImageError
               }
-              alt={seller.name}
               className="h-11 w-11 rounded-full border border-stone-200 object-cover"
             />
 
@@ -201,10 +302,10 @@ export default function ListingCard({
               <div className="flex items-center gap-1">
 
                 <span className="font-semibold text-stone-800">
-                  {seller.name}
+                  {sellerName}
                 </span>
 
-                {seller.verified && (
+                {sellerVerified && (
                   <CheckCircle2
                     size={15}
                     className="text-emerald-500"
@@ -214,17 +315,21 @@ export default function ListingCard({
               </div>
 
               <p className="text-xs font-medium text-stone-500">
-                ⭐ {seller.rating} Seller Rating
+                ⭐ {sellerRating} Seller Rating
               </p>
 
             </div>
 
           </div>
-                    {/* Card Action */}
+
+
+          {/* View Details */}
 
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
+
               onCardClick(listing);
             }}
             className="rounded-2xl bg-stone-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 hover:scale-105 active:scale-95"

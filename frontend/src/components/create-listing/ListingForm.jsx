@@ -7,15 +7,18 @@ export default function ListingForm({
   setCategory,
   condition,
   setCondition,
-  campus,
   residenceHall,
+  setResidenceHall,
   description,
   setDescription,
   handlePublish,
+  publishing,
 }) {
   return (
     <>
-      {/* Title */}
+      {/* =====================================
+          TITLE
+      ====================================== */}
 
       <div className="mt-10">
         <label className="block text-lg font-bold mb-3">
@@ -26,12 +29,17 @@ export default function ListingForm({
           type="text"
           placeholder="e.g. Dell Inspiron Laptop"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) =>
+            setTitle(e.target.value)
+          }
           className="w-full border border-stone-300 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-stone-900"
         />
       </div>
 
-      {/* Price */}
+
+      {/* =====================================
+          PRICE
+      ====================================== */}
 
       <div className="mt-8">
         <label className="block text-lg font-bold mb-3">
@@ -41,16 +49,23 @@ export default function ListingForm({
         <input
           type="number"
           min="0"
-          placeholder="e.g. ₹18,000"
+          placeholder="e.g. 18000"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) =>
+            setPrice(e.target.value)
+          }
           className="w-full border border-stone-300 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-stone-900"
         />
       </div>
 
-      {/* Category + Condition */}
+
+      {/* =====================================
+          CATEGORY + CONDITION
+      ====================================== */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+
+        {/* Category */}
 
         <div>
           <label className="block text-lg font-bold mb-3">
@@ -59,18 +74,43 @@ export default function ListingForm({
 
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full border border-stone-300 rounded-2xl px-5 py-4"
+            onChange={(e) =>
+              setCategory(e.target.value)
+            }
+            className="w-full border border-stone-300 rounded-2xl px-5 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-stone-900"
           >
-            <option value="">Select Category</option>
-            <option>Books</option>
-            <option>Electronics</option>
-            <option>Furniture</option>
-            <option>Clothing</option>
-            <option>Cycles</option>
-            <option>Others</option>
+            <option value="">
+              Select Category
+            </option>
+
+            <option value="Books">
+              Books
+            </option>
+
+            <option value="Electronics">
+              Electronics
+            </option>
+
+            <option value="Furniture">
+              Furniture
+            </option>
+
+            <option value="Clothing">
+              Clothing
+            </option>
+
+            <option value="Cycles">
+              Cycles
+            </option>
+
+            <option value="Others">
+              Others
+            </option>
           </select>
         </div>
+
+
+        {/* Condition */}
 
         <div>
           <label className="block text-lg font-bold mb-3">
@@ -79,67 +119,71 @@ export default function ListingForm({
 
           <select
             value={condition}
-            onChange={(e) => setCondition(e.target.value)}
-            className="w-full border border-stone-300 rounded-2xl px-5 py-4"
+            onChange={(e) =>
+              setCondition(e.target.value)
+            }
+            className="w-full border border-stone-300 rounded-2xl px-5 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-stone-900"
           >
-            <option value="">Select Condition</option>
-            <option>New</option>
-            <option>Like New</option>
-            <option>Good</option>
-            <option>Fair</option>
+            <option value="">
+              Select Condition
+            </option>
+
+            <option value="New">
+              New
+            </option>
+
+            <option value="Like New">
+              Like New
+            </option>
+
+            <option value="Good">
+              Good
+            </option>
+
+            <option value="Fair">
+              Fair
+            </option>
           </select>
         </div>
 
       </div>
 
-      {/* Account Location */}
+
+      {/* =====================================
+          RESIDENCE HALL
+      ====================================== */}
 
       <div className="mt-8">
 
         <label className="block text-lg font-bold mb-3">
-          Listing Location
+          Residence Hall
         </label>
 
-        <div className="rounded-2xl border border-stone-200 bg-stone-50 px-5 py-4">
+        <input
+          type="text"
+          placeholder="e.g. Hostel 12"
+          value={residenceHall}
+          onChange={(e) =>
+            setResidenceHall(
+              e.target.value
+            )
+          }
+          className="w-full border border-stone-300 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-stone-900"
+        />
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-            <div>
-              <p className="text-sm text-stone-500">
-                Campus
-              </p>
-
-              <p className="font-bold text-stone-900">
-                📍 {campus || "Loading campus..."}
-              </p>
-            </div>
-
-            <div className="hidden sm:block h-10 w-px bg-stone-200" />
-
-            <div>
-              <p className="text-sm text-stone-500">
-                Residence Hall
-              </p>
-
-              <p className="font-bold text-stone-900">
-                🏠 {residenceHall || "Loading residence hall..."}
-              </p>
-            </div>
-
-          </div>
-
-          <p className="mt-3 text-xs text-stone-400">
-            This information comes from your registered account and
-            cannot be changed while creating a listing.
-          </p>
-
-        </div>
+        <p className="mt-2 text-xs text-stone-400">
+          This is the residence location for this listing.
+        </p>
 
       </div>
 
-      {/* Description */}
+
+      {/* =====================================
+          DESCRIPTION
+      ====================================== */}
 
       <div className="mt-8">
+
         <label className="block text-lg font-bold mb-3">
           Description
         </label>
@@ -147,20 +191,33 @@ export default function ListingForm({
         <textarea
           rows={6}
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) =>
+            setDescription(
+              e.target.value
+            )
+          }
           placeholder="Describe your item..."
-          className="w-full border border-stone-300 rounded-2xl px-5 py-4 resize-none"
+          className="w-full border border-stone-300 rounded-2xl px-5 py-4 resize-none focus:outline-none focus:ring-2 focus:ring-stone-900"
         />
+
       </div>
 
-      {/* Publish */}
+
+      {/* =====================================
+          PUBLISH BUTTON
+      ====================================== */}
 
       <button
+        type="button"
         onClick={handlePublish}
-        className="mt-10 w-full bg-stone-900 text-white py-4 rounded-2xl text-lg font-bold hover:bg-stone-800 transition"
+        disabled={publishing}
+        className="mt-10 w-full bg-stone-900 text-white py-4 rounded-2xl text-lg font-bold hover:bg-stone-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        🚀 Publish Listing
+        {publishing
+          ? "Publishing..."
+          : "🚀 Publish Listing"}
       </button>
+
     </>
   );
 }

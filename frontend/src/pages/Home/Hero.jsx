@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -18,9 +18,43 @@ export default function Hero({
     { label: "Hostel", emoji: "🏠" },
   ];
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+
+    setQuery(value);
+
+    // IMPORTANT:
+    // When search is completely cleared,
+    // show ALL listings again.
+    if (value.trim() === "") {
+      onSearch("");
+      onCategorySelect("");
+      return;
+    }
+
+    onSearch(value);
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    onSearch(query);
+
+    const value = query.trim();
+
+    if (value === "") {
+      onSearch("");
+      onCategorySelect("");
+      return;
+    }
+
+    onSearch(value);
+  };
+
+  const handleCategoryClick = (category) => {
+    onCategorySelect(category);
+
+    // Keep search text cleared when selecting a category
+    setQuery("");
+    onSearch("");
   };
 
   return (
@@ -49,7 +83,10 @@ export default function Hero({
         <motion.p
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.6 }}
+          transition={{
+            delay: 0.15,
+            duration: 0.6,
+          }}
           className="mt-6 text-lg md:text-xl text-stone-600 max-w-2xl mx-auto"
         >
           Everything your campus needs in one trusted marketplace.
@@ -60,20 +97,23 @@ export default function Hero({
           onSubmit={handleSearchSubmit}
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.6,
+          }}
           className="mt-10 max-w-3xl mx-auto"
         >
           <div className="flex items-center rounded-full bg-white border border-stone-200 shadow-lg p-2">
 
-            <Search className="ml-4 text-stone-400" size={20} />
+            <Search
+              className="ml-4 text-stone-400"
+              size={20}
+            />
 
             <input
               type="text"
               value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                onSearch(e.target.value);
-              }}
+              onChange={handleSearchChange}
               placeholder="Search books, laptops, furniture..."
               className="flex-1 px-4 py-3 outline-none bg-transparent text-stone-800 placeholder-stone-400"
             />
@@ -90,18 +130,31 @@ export default function Hero({
 
         {/* Categories */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45, duration: 0.6 }}
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            delay: 0.45,
+            duration: 0.6,
+          }}
           className="mt-8 flex flex-wrap justify-center gap-3"
         >
           {categories.map((cat) => (
             <button
               key={cat.label}
-              onClick={() => onCategorySelect(cat.label)}
+              type="button"
+              onClick={() =>
+                handleCategoryClick(cat.label)
+              }
               className="flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-stone-200 hover:bg-stone-100 transition shadow-sm"
             >
               <span>{cat.emoji}</span>
+
               <span className="text-sm font-semibold text-stone-700">
                 {cat.label}
               </span>
@@ -113,22 +166,39 @@ export default function Hero({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
+          transition={{
+            delay: 0.7,
+          }}
           className="mt-16 grid grid-cols-3 gap-8 max-w-xl mx-auto"
         >
           <div>
-            <h2 className="text-3xl font-black text-stone-900">12K+</h2>
-            <p className="text-stone-500 text-sm mt-1">Listings</p>
+            <h2 className="text-3xl font-black text-stone-900">
+              12K+
+            </h2>
+
+            <p className="text-stone-500 text-sm mt-1">
+              Listings
+            </p>
           </div>
 
           <div>
-            <h2 className="text-3xl font-black text-stone-900">6</h2>
-            <p className="text-stone-500 text-sm mt-1">Campuses</p>
+            <h2 className="text-3xl font-black text-stone-900">
+              6
+            </h2>
+
+            <p className="text-stone-500 text-sm mt-1">
+              Campuses
+            </p>
           </div>
 
           <div>
-            <h2 className="text-3xl font-black text-stone-900">2K+</h2>
-            <p className="text-stone-500 text-sm mt-1">Students</p>
+            <h2 className="text-3xl font-black text-stone-900">
+              2K+
+            </h2>
+
+            <p className="text-stone-500 text-sm mt-1">
+              Students
+            </p>
           </div>
         </motion.div>
 

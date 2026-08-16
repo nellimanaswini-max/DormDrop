@@ -6,25 +6,120 @@ export default function ImageUploader({
   setImage,
 }) {
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (!file) return;
+
+    // Check file type
     if (!file.type.startsWith("image/")) {
-        toast.error("Please upload an image file.");
-        return;
-        }
+      toast.error("Please upload an image file.");
+      return;
+    }
+
+    // Check file size
     if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image must be smaller than 5 MB.");
-        return;
+      toast.error("Image must be smaller than 5 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const imageSource = reader.result;
+
+      const img = new Image();
+
+      img.onload = () => {
+        const MAX_SIZE = 1200;
+
+        let width = img.width;
+        let height = img.height;
+
+        // Resize large images
+        if (
+          width > MAX_SIZE ||
+          height > MAX_SIZE
+        ) {
+          if (width > height) {
+            height = Math.round(
+              (height * MAX_SIZE) / width
+            );
+
+            width = MAX_SIZE;
+          } else {
+            width = Math.round(
+              (width * MAX_SIZE) / height
+            );
+
+            height = MAX_SIZE;
+          }
         }
 
-    const imageUrl = URL.createObjectURL(file);
+        const canvas =
+          document.createElement("canvas");
 
-    setImage(imageUrl);
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx =
+          canvas.getContext("2d");
+
+        if (!ctx) {
+          toast.error(
+            "Could not process image."
+          );
+          return;
+        }
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          width,
+          height
+        );
+
+        // IMPORTANT:
+        // Store a permanent Base64 data URL,
+        // NOT a blob URL.
+        const compressedImage =
+          canvas.toDataURL(
+            "image/jpeg",
+            0.8
+          );
+
+        setImage(compressedImage);
+
+        console.log(
+          "Image converted to permanent data URL:",
+          compressedImage.substring(0, 40)
+        );
+      };
+
+      img.onerror = () => {
+        toast.error(
+          "Could not process this image."
+        );
+      };
+
+      img.src = imageSource;
+    };
+
+    reader.onerror = () => {
+      toast.error(
+        "Could not read the image."
+      );
+    };
+
+    reader.readAsDataURL(file);
+
+    // Allow selecting the same file again
+    e.target.value = "";
   };
 
   return (
     <div className="mt-12">
+
       <label className="block text-lg font-bold mb-4">
         Upload Photos
       </label>
@@ -39,28 +134,28 @@ export default function ImageUploader({
         />
 
         {image ? (
-            <div className="relative w-full h-full">
+          <div className="relative w-full h-full">
 
-                <img
-                src={image}
-                alt="Preview"
-                className="w-full h-full object-cover"
-                />
+            <img
+              src={image}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
 
-                <button
-                type="button"
-                onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setImage(null);
-                }}
-                className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-xl shadow-lg hover:bg-red-700 transition"
-                >
-                Remove
-                </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setImage(null);
+              }}
+              className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-xl shadow-lg hover:bg-red-700 transition"
+            >
+              Remove
+            </button>
 
-            </div>
-            ) : (
+          </div>
+        ) : (
           <>
             <UploadCloud
               size={54}
@@ -72,12 +167,13 @@ export default function ImageUploader({
             </p>
 
             <span className="mt-2 text-sm text-stone-400">
-                    JPG, PNG • 1 Image • Max 5 MB
+              JPG, PNG • 1 Image • Max 5 MB
             </span>
           </>
         )}
 
       </label>
+
     </div>
   );
 }
